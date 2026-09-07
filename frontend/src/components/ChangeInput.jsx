@@ -4,7 +4,6 @@ import AgentThinking from './AgentThinking'
 const EXAMPLES = [
   'Move scene 5 to day 3',
   'Swap scenes 2 and 7',
-  'Consolidate all night shoots',
   'Push day 4 scenes to day 5',
 ]
 
