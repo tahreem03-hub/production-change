@@ -5,6 +5,8 @@
  *   onSubmit  – (text: string) => void
  *   loading   – boolean
  */
+import AgentThinking from './AgentThinking'
+
 export default function ChangeInput({ onSubmit, loading }) {
   function handleSubmit(e) {
     e.preventDefault()
@@ -25,6 +27,7 @@ export default function ChangeInput({ onSubmit, loading }) {
                    disabled:bg-gray-100 disabled:cursor-not-allowed placeholder:text-gray-400"
         aria-label="Change request"
       />
+      {loading && <AgentThinking loading={loading} />}
       <button
         type="submit"
         disabled={loading}
