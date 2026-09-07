@@ -101,6 +101,16 @@ class Plan(BaseModel):
     strategy: str = ""
     summary: str = ""
     risk_score: float = 0.0
+    feasible: bool = True
+
+        # NEW FIELDS:
+    reasoning: Optional[str] = None
+    confidence: Optional[float] = None
+    alternatives_considered: Optional[int] = None
+    strategy: Optional[str] = None
+    parallel_results: Optional[List[Source]] = None
+
+    
     risk_delta: float = Field(
         default=0.0,
         description="Risk this plan adds (positive) or removes (negative) versus the current schedule.",
@@ -108,7 +118,6 @@ class Plan(BaseModel):
     honors_request: bool = Field(
         default=True, description="False when the plan deviates from the literal request."
     )
-    feasible: bool = True
     cost_breakdown: Optional[CostBreakdown] = None
     violations: list[Violation] = Field(default_factory=list)
     schedule: list[dict[str, Any]] = Field(

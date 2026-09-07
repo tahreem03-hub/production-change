@@ -7,10 +7,11 @@
  *   selected      – boolean, true when this plan's stripboard is active
  *   baselineCost  – number, used to compute cost delta
  *   onSelect      – () => void
+ *   onExport      – () => void (optional)
  */
 import { useState } from 'react'
 
-export default function PlanCard({ plan, rank, selected, baselineCost, onSelect }) {
+export default function PlanCard({ plan, rank, selected, baselineCost, onSelect, onExport }) {
   const [expanded, setExpanded] = useState(selected)
   const delta = typeof plan.cost === 'number' && typeof baselineCost === 'number'
     ? plan.cost - baselineCost
@@ -22,6 +23,11 @@ export default function PlanCard({ plan, rank, selected, baselineCost, onSelect 
   const toggleExpand = (e) => {
     e.stopPropagation()
     setExpanded(!expanded)
+  }
+
+  const handleExport = (e) => {
+    e.stopPropagation()
+    if (onExport) onExport()
   }
 
   return (
@@ -55,6 +61,15 @@ export default function PlanCard({ plan, rank, selected, baselineCost, onSelect 
               <span className="text-[10px] bg-violet-500 text-white px-2 py-0.5 rounded-full whitespace-nowrap">
                 Active
               </span>
+            )}
+            {onExport && (
+              <button
+                onClick={handleExport}
+                className="text-[10px] text-violet-600 hover:text-violet-800 border border-violet-200 hover:border-violet-400 px-2 py-0.5 rounded transition-colors"
+                title="Export to PDF"
+              >
+                Export PDF
+              </button>
             )}
             <button
               onClick={toggleExpand}
@@ -90,11 +105,44 @@ export default function PlanCard({ plan, rank, selected, baselineCost, onSelect 
             {delta !== 0 && formatCurrency(Math.abs(delta))}
           </div>
         )}
+
+        {/* Confidence Bar - Always Visible */}
+        {plan.confidence != null && (
+          <div className="flex items-center gap-2 mt-2">
+            <span className="text-[10px] text-gray-500 font-medium">Confidence</span>
+            <div className="flex-1 max-w-24 h-1.5 bg-gray-200 rounded-full">
+              <div 
+                className="h-1.5 bg-violet-500 rounded-full transition-all duration-500"
+                style={{ width: `${plan.confidence * 100}%` }}
+              />
+            </div>
+            <span className="text-[10px] font-mono text-gray-600">
+              {Math.round(plan.confidence * 100)}%
+            </span>
+            {plan.alternatives_considered && (
+              <span className="text-[10px] text-gray-400 ml-1">
+                ({plan.alternatives_considered} alternatives)
+              </span>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Expandable details */}
       {expanded && (
         <div className="px-4 pb-4 pt-0 border-t border-gray-100">
+          {/* ── REASONING ── */}
+          {plan.reasoning && (
+            <div className="mt-3 bg-blue-50 border border-blue-200 rounded-lg p-3">
+              <p className="text-[10px] font-semibold text-blue-700 uppercase tracking-wide">
+                Why this plan?
+              </p>
+              <p className="text-xs text-blue-600 mt-1 leading-relaxed">
+                {plan.reasoning}
+              </p>
+            </div>
+          )}
+
           {/* Risk delta */}
           {plan.risk_delta != null && (
             <div className="text-xs text-gray-500 mb-3 mt-3">
@@ -110,6 +158,15 @@ export default function PlanCard({ plan, rank, selected, baselineCost, onSelect 
               >
                 {plan.risk_delta > 0 ? '+' : ''}
                 {plan.risk_delta}
+              </span>
+            </div>
+          )}
+
+          {/* Strategy Badge */}
+          {plan.strategy && (
+            <div className="mb-3">
+              <span className="text-[10px] bg-gray-100 text-gray-700 px-2 py-0.5 rounded-full">
+                Strategy: {plan.strategy.replace('_', ' ')}
               </span>
             </div>
           )}
@@ -158,7 +215,7 @@ export default function PlanCard({ plan, rank, selected, baselineCost, onSelect 
           {plan.parallel_results?.length > 0 && (
             <div className="mt-3 pt-2 border-t border-gray-100">
               <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide mb-1">
-                Sources
+                Grounded in Parallel Search
               </p>
               <div className="flex flex-wrap gap-1.5">
                 {plan.parallel_results.map((source, i) => (

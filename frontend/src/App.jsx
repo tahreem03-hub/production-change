@@ -6,16 +6,19 @@ import RejectedPlans from './components/RejectedPlans'
 import SourceList from './components/SourceList'
 import Stripboard from './components/Stripboard'
 import ViolationBadges from './components/ViolationBadges'
+import CompareView from './components/CompareView'
+import AgentTrace from './components/AgentTrace'
+import { jsPDF } from 'jspdf'
 
 export default function App() {
   // ── Baseline schedule data ──────────────────────────────────────────────
-  const [schedule, setSchedule] = useState(null)   // full /schedule response
+  const [schedule, setSchedule] = useState(null)
   const [loadError, setLoadError] = useState(null)
 
   // ── Change‑request state ────────────────────────────────────────────────
   const [loading, setLoading] = useState(false)
   const [requestError, setRequestError] = useState(null)
-  const [result, setResult] = useState(null)        // /change response
+  const [result, setResult] = useState(null)
 
   // ── Which plan is currently displayed on the stripboard ─────────────────
   const [activePlanIdx, setActivePlanIdx] = useState(null)
@@ -28,17 +31,33 @@ export default function App() {
   }, [])
 
   // ── Derived values ───────────────────────────────────────────────────────
-  const baselineDays  = schedule?.days ?? []
-  const scenes        = schedule?.scenes ?? []
-  const cast          = schedule?.cast ?? []
-  const baselineCost  = schedule?.baseline_cost ?? null
+  const baselineDays = schedule?.days ?? []
+  const scenes = schedule?.scenes ?? []
+  const cast = schedule?.cast ?? []
+  const baselineCost = schedule?.baseline_cost ?? null
 
-  // Which days to display on the stripboard right now
-  const activePlan    = result?.plans?.[activePlanIdx] ?? null
-  const displayDays   = activePlan?.schedule ?? baselineDays
+  const activePlan = result?.plans?.[activePlanIdx] ?? null
+  const displayDays = activePlan?.schedule ?? baselineDays
+  const violations = activePlan?.violations ?? schedule?.violations ?? []
 
-  // Violations to show: plan's violations or baseline violations
-  const violations    = activePlan?.violations ?? schedule?.violations ?? []
+  // ── Export function ──────────────────────────────────────────────────────
+  async function exportPlan(plan) {
+    const doc = new jsPDF()
+    doc.setFontSize(16)
+    doc.text(`Plan #${plan.rank}: ${plan.summary}`, 20, 20)
+    doc.setFontSize(12)
+    doc.text(`Cost: $${plan.cost.toLocaleString()}`, 20, 35)
+    if (plan.reasoning) {
+      doc.text(`Reasoning: ${plan.reasoning}`, 20, 50)
+    }
+    if (plan.changes?.length) {
+      doc.text('Changes:', 20, 65)
+      plan.changes.forEach((change, i) => {
+        doc.text(`• ${change.reason}`, 25, 75 + (i * 10))
+      })
+    }
+    doc.save(`plan-${plan.rank}.pdf`)
+  }
 
   // ── Handlers ─────────────────────────────────────────────────────────────
   async function handleChangeRequest(text) {
@@ -51,9 +70,7 @@ export default function App() {
       const data = await postChange(text)
       setResult(data)
 
-      // Auto-select the top-ranked plan if any
       if (data.plans?.length > 0) {
-        // plans should already be sorted by rank from the API, but sort defensively
         const sorted = [...data.plans].sort((a, b) => (a.rank ?? 0) - (b.rank ?? 0))
         data.plans = sorted
         setActivePlanIdx(0)
@@ -82,7 +99,6 @@ export default function App() {
             )}
           </div>
 
-          {/* Baseline cost pill */}
           {baselineCost != null && (
             <div className="text-sm bg-gray-100 rounded-full px-3 py-1 font-mono text-gray-700">
               Schedule total:{' '}
@@ -103,9 +119,7 @@ export default function App() {
         )}
 
         {/* ── Load error ──────────────────────────────────────────────── */}
-        {loadError && (
-          <ErrorBanner message={loadError} />
-        )}
+        {loadError && <ErrorBanner message={loadError} />}
 
         {schedule && (
           <>
@@ -141,15 +155,6 @@ export default function App() {
               <SectionHeader>Request a change</SectionHeader>
               <ChangeInput onSubmit={handleChangeRequest} loading={loading} />
 
-              {/* Inline loading note */}
-              {loading && (
-                <p className="mt-2 text-xs text-gray-400 flex items-center gap-1.5">
-                  <Spinner className="w-3.5 h-3.5" />
-                  Running live web search — this may take a few seconds…
-                </p>
-              )}
-
-              {/* Request error (422, 404, or other) */}
               {requestError && (
                 <ErrorBanner message={requestError} className="mt-3" />
               )}
@@ -158,6 +163,13 @@ export default function App() {
             {/* ── Results ─────────────────────────────────────────────── */}
             {result && (
               <>
+                {/* ── AGENT TRACE ─────────────────────────────────────── */}
+                {result.trace?.length > 0 && (
+                  <section aria-label="Agent Trace">
+                    <AgentTrace steps={result.trace} />
+                  </section>
+                )}
+
                 {/* status: ok → plans */}
                 {result.status === 'ok' && result.plans?.length > 0 && (
                   <section aria-label="Plans">
@@ -174,14 +186,23 @@ export default function App() {
                           rank={plan.rank ?? i + 1}
                           selected={activePlanIdx === i}
                           baselineCost={baselineCost}
-                          onSelect={() => {
-                            setActivePlanIdx(i)
-                          }}
+                          onSelect={() => setActivePlanIdx(i)}
+                          onExport={() => exportPlan(plan)}
                         />
                       ))}
                     </div>
 
-                    {/* Violations for active plan */}
+                    {/* ── Compare View ────────────────────────────────── */}
+                    {result.plans?.length > 1 && (
+                      <div className="mt-6">
+                        <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                          Compare All Plans
+                        </h3>
+                        <CompareView plans={result.plans} baselineCost={baselineCost} />
+                      </div>
+                    )}
+
+                    {/* ── Violations for active plan ─────────────────── */}
                     {violations.length > 0 && (
                       <div className="mt-4">
                         <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">

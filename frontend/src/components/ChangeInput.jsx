@@ -16,36 +16,40 @@ export default function ChangeInput({ onSubmit, loading }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex gap-2 items-center">
-      <input
-        name="request"
-        type="text"
-        placeholder="move scene 5 to day 3"
-        disabled={loading}
-        className="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm
-                   focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent
-                   disabled:bg-gray-100 disabled:cursor-not-allowed placeholder:text-gray-400"
-        aria-label="Change request"
-      />
+    <div>
+      <form onSubmit={handleSubmit} className="flex gap-2 items-center">
+        <input
+          name="request"
+          type="text"
+          placeholder="move scene 5 to day 3"
+          disabled={loading}
+          className="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm
+                     focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent
+                     disabled:bg-gray-100 disabled:cursor-not-allowed placeholder:text-gray-400"
+          aria-label="Change request"
+        />
+        <button
+          type="submit"
+          disabled={loading}
+          className="rounded-lg bg-violet-600 text-white px-5 py-2.5 text-sm font-medium
+                     hover:bg-violet-700 active:bg-violet-800 transition-colors
+                     disabled:opacity-50 disabled:cursor-not-allowed
+                     focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-1"
+        >
+          {loading ? (
+            <span className="flex items-center gap-2">
+              <Spinner />
+              Thinking…
+            </span>
+          ) : (
+            'Submit'
+          )}
+        </button>
+      </form>
+
+      {/* Agent Thinking - displayed below the form when loading */}
       {loading && <AgentThinking loading={loading} />}
-      <button
-        type="submit"
-        disabled={loading}
-        className="rounded-lg bg-violet-600 text-white px-5 py-2.5 text-sm font-medium
-                   hover:bg-violet-700 active:bg-violet-800 transition-colors
-                   disabled:opacity-50 disabled:cursor-not-allowed
-                   focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-1"
-      >
-        {loading ? (
-          <span className="flex items-center gap-2">
-            <Spinner />
-            Thinking…
-          </span>
-        ) : (
-          'Submit'
-        )}
-      </button>
-    </form>
+    </div>
   )
 }
 
