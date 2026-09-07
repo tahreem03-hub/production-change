@@ -1,232 +1,209 @@
+import { useState } from 'react'
+
 /**
  * PlanCard
  *
  * Props:
- *   plan          – a single plan object from plans[]
- *   rank          – display rank (1-based)
- *   selected      – boolean, true when this plan's stripboard is active
- *   baselineCost  – number, used to compute cost delta
- *   onSelect      – () => void
- *   onExport      – () => void (optional)
+ *   plan         – plan object
+ *   rank         – 1-based display rank
+ *   selected     – boolean
+ *   baselineCost – number
+ *   onSelect     – () => void  (loads plan into stripboard)
+ *   onExport     – () => void
+ *   animClass    – optional extra class for stagger animation
  */
-import { useState } from 'react'
+export default function PlanCard({ plan, rank, selected, baselineCost, onSelect, onExport, animClass = '' }) {
+  const [open, setOpen] = useState(false)
 
-export default function PlanCard({ plan, rank, selected, baselineCost, onSelect, onExport }) {
-  const [expanded, setExpanded] = useState(selected)
-  const delta = typeof plan.cost === 'number' && typeof baselineCost === 'number'
-    ? plan.cost - baselineCost
-    : null
-
-  const isSaving = delta !== null && delta < 0
-  const isExpensive = delta !== null && delta > 0
-
-  const toggleExpand = (e) => {
-    e.stopPropagation()
-    setExpanded(!expanded)
-  }
-
-  const handleExport = (e) => {
-    e.stopPropagation()
-    if (onExport) onExport()
-  }
+  const delta    = (typeof plan.cost === 'number' && typeof baselineCost === 'number')
+    ? plan.cost - baselineCost : null
+  const saving   = delta !== null && delta < 0
+  const costly   = delta !== null && delta > 0
+  const isBest   = rank === 1
 
   return (
-    <div
-      className={`rounded-xl border-2 transition-all ${
-        selected
-          ? 'border-violet-500 bg-violet-50 shadow-lg'
-          : 'border-gray-200 bg-white hover:border-violet-300 hover:shadow-md'
-      }`}
+    <article
+      className={`rounded-2xl border bg-white shadow-sm transition-all duration-200 anim-fade-up ${animClass}
+        ${selected
+          ? 'border-gray-900 shadow-md ring-1 ring-gray-900'
+          : isBest
+          ? 'border-amber-300 hover:border-gray-400'
+          : 'border-gray-200 hover:border-gray-400'
+        }`}
     >
-      {/* Clickable header */}
+      {/* ── Clickable summary row ────────────────────────────────────── */}
       <div
-        className="p-4 cursor-pointer"
+        className="px-5 pt-5 pb-4 cursor-pointer select-none"
         onClick={onSelect}
         role="button"
         tabIndex={0}
         onKeyDown={(e) => e.key === 'Enter' && onSelect()}
         aria-pressed={selected}
       >
-        <div className="flex items-start justify-between gap-2">
-          <div className="flex items-center gap-2 flex-1 min-w-0">
-            <span className="bg-gray-800 text-white text-xs font-bold px-2 py-0.5 rounded-full flex-shrink-0">
-              #{rank}
+        {/* Top: rank + badges */}
+        <div className="flex items-center gap-2 mb-3 flex-wrap">
+          <span className={`text-xs font-bold px-2.5 py-1 rounded-lg
+            ${isBest
+              ? 'bg-amber-100 text-amber-700 border border-amber-200'
+              : 'bg-gray-100 text-gray-600'
+            }`}>
+            {isBest ? 'Best pick' : `Plan ${rank}`}
+          </span>
+
+          {selected && (
+            <span className="text-xs bg-gray-900 text-white px-2.5 py-1 rounded-lg font-medium">
+              Active
             </span>
-            <h3 className="text-sm font-semibold text-gray-800 leading-snug truncate">
-              {plan.summary}
-            </h3>
-          </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
-            {selected && (
-              <span className="text-[10px] bg-violet-500 text-white px-2 py-0.5 rounded-full whitespace-nowrap">
-                Active
-              </span>
-            )}
-            {onExport && (
-              <button
-                onClick={handleExport}
-                className="text-[10px] text-violet-600 hover:text-violet-800 border border-violet-200 hover:border-violet-400 px-2 py-0.5 rounded transition-colors"
-                title="Export to PDF"
-              >
-                Export PDF
-              </button>
-            )}
-            <button
-              onClick={toggleExpand}
-              className="text-gray-400 hover:text-gray-600 p-0.5"
-              aria-label={expanded ? 'Collapse' : 'Expand'}
-            >
-              <svg
-                className={`w-4 h-4 transition-transform ${expanded ? 'rotate-180' : ''}`}
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-          </div>
+          )}
+
+          {delta !== null && (
+            <span className={`ml-auto text-xs font-semibold px-2.5 py-1 rounded-lg
+              ${saving ? 'bg-green-100 text-green-700'
+              : costly ? 'bg-red-100  text-red-600'
+              :          'bg-gray-100 text-gray-600'}`}>
+              {saving ? `↓ Saves ${fmt(Math.abs(delta))}`
+              : costly ? `↑ Costs ${fmt(Math.abs(delta))}`
+              :          'No cost change'}
+            </span>
+          )}
         </div>
 
-        {/* Cost delta - always visible */}
-        {delta !== null && (
-          <div
-            className={`inline-flex items-center gap-1 text-sm font-semibold px-2 py-0.5 rounded mt-2 ${
-              isSaving
-                ? 'bg-green-100 text-green-700'
-                : isExpensive
-                ? 'bg-red-100 text-red-600'
-                : 'bg-gray-100 text-gray-600'
-            }`}
-          >
-            {isSaving && '↓ saves '}
-            {isExpensive && '↑ costs '}
-            {delta === 0 && 'No cost change '}
-            {delta !== 0 && formatCurrency(Math.abs(delta))}
-          </div>
-        )}
+        {/* Summary */}
+        <p className="text-base font-semibold text-gray-900 leading-snug">{plan.summary}</p>
 
-        {/* Confidence Bar - Always Visible */}
-        {plan.confidence != null && (
-          <div className="flex items-center gap-2 mt-2">
-            <span className="text-[10px] text-gray-500 font-medium">Confidence</span>
-            <div className="flex-1 max-w-24 h-1.5 bg-gray-200 rounded-full">
-              <div 
-                className="h-1.5 bg-violet-500 rounded-full transition-all duration-500"
-                style={{ width: `${plan.confidence * 100}%` }}
-              />
-            </div>
-            <span className="text-[10px] font-mono text-gray-600">
-              {Math.round(plan.confidence * 100)}%
+        {/* Sub-metrics row */}
+        <div className="mt-3 flex flex-wrap items-center gap-3">
+          {plan.risk_delta != null && plan.risk_delta !== 0 && (
+            <span className={`inline-flex items-center gap-1 text-xs font-medium
+              ${plan.risk_delta > 0 ? 'text-red-500' : 'text-green-600'}`}>
+              <TrendIcon up={plan.risk_delta > 0} />
+              Risk {plan.risk_delta > 0 ? '+' : ''}{plan.risk_delta}
             </span>
-            {plan.alternatives_considered && (
-              <span className="text-[10px] text-gray-400 ml-1">
-                ({plan.alternatives_considered} alternatives)
+          )}
+
+          {plan.confidence != null && (
+            <div className="flex items-center gap-2 flex-1 min-w-[120px]">
+              <span className="text-xs text-gray-400 whitespace-nowrap">Confidence</span>
+              <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-gray-800 rounded-full transition-all duration-700"
+                  style={{ width: `${Math.round(plan.confidence * 100)}%` }}
+                />
+              </div>
+              <span className="text-xs font-mono text-gray-500">
+                {Math.round(plan.confidence * 100)}%
               </span>
-            )}
-          </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ── Action bar ────────────────────────────────────────────────── */}
+      <div className="px-5 pb-4 flex items-center gap-2 border-t border-gray-100 pt-3">
+        <button
+          onClick={(e) => { e.stopPropagation(); setOpen((v) => !v) }}
+          className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-900
+                     font-medium transition-colors"
+        >
+          <ChevronIcon open={open} />
+          {open ? 'Hide details' : 'Show details'}
+        </button>
+
+        {onExport && (
+          <button
+            onClick={(e) => { e.stopPropagation(); onExport() }}
+            className="ml-auto flex items-center gap-1.5 text-xs text-gray-400
+                       hover:text-gray-700 border border-gray-200 hover:border-gray-300
+                       px-3 py-1.5 rounded-lg transition-colors font-medium"
+          >
+            <DownloadIcon />
+            Export PDF
+          </button>
         )}
       </div>
 
-      {/* Expandable details */}
-      {expanded && (
-        <div className="px-4 pb-4 pt-0 border-t border-gray-100">
-          {/* ── REASONING ── */}
+      {/* ── Expandable detail panel ──────────────────────────────────── */}
+      {open && (
+        <div className="px-5 pb-5 border-t border-gray-100 pt-4 space-y-5">
+
+          {/* Reasoning */}
           {plan.reasoning && (
-            <div className="mt-3 bg-blue-50 border border-blue-200 rounded-lg p-3">
-              <p className="text-[10px] font-semibold text-blue-700 uppercase tracking-wide">
-                Why this plan?
-              </p>
-              <p className="text-xs text-blue-600 mt-1 leading-relaxed">
-                {plan.reasoning}
-              </p>
+            <div>
+              <SectionLabel>Reasoning</SectionLabel>
+              <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 mt-2">
+                <p className="text-sm text-blue-800 leading-relaxed">{plan.reasoning}</p>
+              </div>
             </div>
           )}
 
-          {/* Risk delta */}
-          {plan.risk_delta != null && (
-            <div className="text-xs text-gray-500 mb-3 mt-3">
-              Risk Delta:{' '}
-              <span
-                className={
-                  plan.risk_delta > 0
-                    ? 'text-red-500 font-medium'
-                    : plan.risk_delta < 0
-                    ? 'text-green-600 font-medium'
-                    : 'text-gray-500'
-                }
-              >
-                {plan.risk_delta > 0 ? '+' : ''}
-                {plan.risk_delta}
-              </span>
-            </div>
-          )}
-
-          {/* Strategy Badge */}
+          {/* Strategy */}
           {plan.strategy && (
-            <div className="mb-3">
-              <span className="text-[10px] bg-gray-100 text-gray-700 px-2 py-0.5 rounded-full">
-                Strategy: {plan.strategy.replace('_', ' ')}
+            <div>
+              <SectionLabel>Strategy</SectionLabel>
+              <span className="inline-block mt-1.5 text-sm bg-gray-100 text-gray-700 px-3 py-1 rounded-lg border border-gray-200 capitalize">
+                {plan.strategy.replace(/_/g, ' ')}
               </span>
             </div>
           )}
 
-          {/* Changes list */}
+          {/* Changes */}
           {plan.changes?.length > 0 && (
-            <div className="mb-3">
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
-                Changes
-              </p>
-              <ul className="space-y-0.5">
-                {plan.changes.map((change, i) => (
-                  <li key={i} className="text-xs text-gray-700 flex gap-1.5">
-                    <span className="text-violet-400 mt-0.5">•</span>
-                    <span>{change.reason ?? JSON.stringify(change)}</span>
+            <div>
+              <SectionLabel>Changes</SectionLabel>
+              <ul className="mt-2 space-y-2">
+                {plan.changes.map((c, i) => (
+                  <li key={i} className="flex items-start gap-3">
+                    <span className="mt-0.5 w-5 h-5 rounded-full bg-gray-900 text-white
+                                     text-[10px] font-bold flex items-center justify-center flex-shrink-0">
+                      {i + 1}
+                    </span>
+                    <p className="text-sm text-gray-700 leading-snug">
+                      {c.reason ?? JSON.stringify(c)}
+                    </p>
                   </li>
                 ))}
               </ul>
             </div>
           )}
 
-          {/* Cost breakdown table */}
+          {/* Cost breakdown */}
           {plan.cost_breakdown?.lines?.length > 0 && (
             <div>
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
-                Cost Breakdown
-              </p>
-              <table className="w-full text-xs border-collapse">
-                <tbody>
-                  {plan.cost_breakdown.lines.map((line, i) => (
-                    <tr key={i} className={i % 2 === 0 ? 'bg-gray-50' : ''}>
-                      <td className="py-0.5 px-2 text-gray-600">{line.label}</td>
-                      <td className="py-0.5 px-2 text-right font-mono text-gray-800">
-                        {typeof line.amount === 'number'
-                          ? formatCurrency(line.amount)
-                          : line.amount}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <SectionLabel>Cost breakdown</SectionLabel>
+              <div className="mt-2 rounded-xl border border-gray-200 overflow-hidden">
+                <table className="w-full text-sm">
+                  <tbody>
+                    {plan.cost_breakdown.lines.map((line, i) => (
+                      <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50/70'}>
+                        <td className="px-4 py-2.5 text-gray-600">{line.label}</td>
+                        <td className="px-4 py-2.5 text-right font-mono font-semibold text-gray-900">
+                          {typeof line.amount === 'number' ? fmt(line.amount) : line.amount}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
 
-          {/* Parallel sources - inside each plan */}
+          {/* Sources within plan */}
           {plan.parallel_results?.length > 0 && (
-            <div className="mt-3 pt-2 border-t border-gray-100">
-              <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide mb-1">
-                Grounded in Parallel Search
-              </p>
-              <div className="flex flex-wrap gap-1.5">
-                {plan.parallel_results.map((source, i) => (
+            <div>
+              <SectionLabel>Sources</SectionLabel>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {plan.parallel_results.map((s, i) => (
                   <a
                     key={i}
-                    href={source.url}
+                    href={s.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[10px] text-violet-600 hover:text-violet-800 underline"
+                    className="inline-flex items-center gap-1.5 text-xs text-gray-600
+                               hover:text-gray-900 bg-gray-100 hover:bg-gray-200
+                               border border-gray-200 rounded-lg px-3 py-1.5 transition-colors font-medium"
                   >
-                    {source.title}
+                    <ExternalLinkIcon />
+                    {s.title}
                   </a>
                 ))}
               </div>
@@ -234,14 +211,51 @@ export default function PlanCard({ plan, rank, selected, baselineCost, onSelect,
           )}
         </div>
       )}
-    </div>
+    </article>
   )
 }
 
-function formatCurrency(n) {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    maximumFractionDigits: 0,
-  }).format(n)
+/* ── Helpers ─────────────────────────────────────────────────────────────────── */
+
+function SectionLabel({ children }) {
+  return (
+    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{children}</p>
+  )
+}
+
+function fmt(n) {
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n)
+}
+
+function TrendIcon({ up }) {
+  return (
+    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+        d={up ? 'M5 15l7-7 7 7' : 'M19 9l-7 7-7-7'} />
+    </svg>
+  )
+}
+function ChevronIcon({ open }) {
+  return (
+    <svg className={`w-3.5 h-3.5 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+      fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+    </svg>
+  )
+}
+function DownloadIcon() {
+  return (
+    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+    </svg>
+  )
+}
+function ExternalLinkIcon() {
+  return (
+    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+    </svg>
+  )
 }
