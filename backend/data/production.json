@@ -1,0 +1,148 @@
+{
+  "production": {
+    "id": "prod_nightshift",
+    "title": "NIGHT SHIFT",
+    "currency": "USD",
+    "start_date": "2026-03-02",
+    "current_date": "2026-03-01"
+  },
+  "rules": {
+    "standard_shoot_hours": 10.0,
+    "max_shoot_hours": 14.0,
+    "turnaround_hours": 10.0,
+    "meal_interval_hours": 6.0,
+    "max_pages_per_day": 6.0,
+    "wrap_buffer_hours": 1.0
+  },
+  "rates": {
+    "crew_size": 42,
+    "crew_base_day": 38000,
+    "crew_overtime_hourly": 4200,
+    "meal_penalty_per_head": 25,
+    "company_move_cost": 6500,
+    "permit_rush_fee": 2200,
+    "forced_call_penalty_per_cast": 950,
+    "night_premium_per_day": 3100
+  },
+  "cast": [
+    {
+      "id": "c1",
+      "name": "Mara Ellis",
+      "role": "DETECTIVE REYES",
+      "deal": "weekly",
+      "day_rate": 4800,
+      "hold_rate": 4800,
+      "unavailable": []
+    },
+    {
+      "id": "c2",
+      "name": "Theo Nakamura",
+      "role": "VIC",
+      "deal": "daily",
+      "day_rate": 2200,
+      "hold_rate": 1100,
+      "unavailable": ["2026-03-02"]
+    },
+    {
+      "id": "c3",
+      "name": "Ines Duarte",
+      "role": "DISPATCHER",
+      "deal": "daily",
+      "day_rate": 1600,
+      "hold_rate": 800,
+      "unavailable": []
+    },
+    {
+      "id": "c4",
+      "name": "Owen Brady",
+      "role": "CAPTAIN HALL",
+      "deal": "daily",
+      "day_rate": 2900,
+      "hold_rate": 1450,
+      "unavailable": ["2026-03-03", "2026-03-04"]
+    },
+    {
+      "id": "c5",
+      "name": "Priya Raman",
+      "role": "ME TECH",
+      "deal": "daily",
+      "day_rate": 1400,
+      "hold_rate": 700,
+      "unavailable": []
+    },
+    {
+      "id": "c6",
+      "name": "Sam Okafor",
+      "role": "UNIFORM",
+      "deal": "daily",
+      "day_rate": 1100,
+      "hold_rate": 550,
+      "unavailable": []
+    }
+  ],
+  "locations": [
+    {
+      "id": "l1",
+      "name": "Precinct Bullpen",
+      "type": "stage",
+      "day_rate": 5200,
+      "permit_lead_days": 0,
+      "blackout_dates": []
+    },
+    {
+      "id": "l2",
+      "name": "Riverside Alley",
+      "type": "practical",
+      "day_rate": 9800,
+      "permit_lead_days": 5,
+      "blackout_dates": ["2026-03-06"]
+    },
+    {
+      "id": "l3",
+      "name": "County Morgue",
+      "type": "practical",
+      "day_rate": 7400,
+      "permit_lead_days": 3,
+      "blackout_dates": []
+    },
+    {
+      "id": "l4",
+      "name": "Reyes Apartment",
+      "type": "stage",
+      "day_rate": 4100,
+      "permit_lead_days": 0,
+      "blackout_dates": []
+    },
+    {
+      "id": "l5",
+      "name": "Harbor Overpass",
+      "type": "practical",
+      "day_rate": 11200,
+      "permit_lead_days": 7,
+      "blackout_dates": []
+    }
+  ],
+  "scenes": [
+    {"id": "1",  "slug": "INT. PRECINCT BULLPEN - DAY",   "int_ext": "INT", "day_night": "DAY",   "pages": 1.5, "est_hours": 2.0, "location_id": "l1", "cast_ids": ["c1", "c3"]},
+    {"id": "2",  "slug": "INT. PRECINCT BULLPEN - DAY",   "int_ext": "INT", "day_night": "DAY",   "pages": 2.0, "est_hours": 2.5, "location_id": "l1", "cast_ids": ["c1", "c4"]},
+    {"id": "3",  "slug": "INT. PRECINCT BULLPEN - NIGHT", "int_ext": "INT", "day_night": "NIGHT", "pages": 1.0, "est_hours": 1.5, "location_id": "l1", "cast_ids": ["c1", "c6"]},
+    {"id": "4",  "slug": "EXT. RIVERSIDE ALLEY - NIGHT",  "int_ext": "EXT", "day_night": "NIGHT", "pages": 2.5, "est_hours": 4.0, "location_id": "l2", "cast_ids": ["c1", "c2", "c6"]},
+    {"id": "5",  "slug": "EXT. RIVERSIDE ALLEY - NIGHT",  "int_ext": "EXT", "day_night": "NIGHT", "pages": 3.0, "est_hours": 4.5, "location_id": "l2", "cast_ids": ["c1", "c2"]},
+    {"id": "6",  "slug": "INT. COUNTY MORGUE - DAY",      "int_ext": "INT", "day_night": "DAY",   "pages": 1.5, "est_hours": 2.0, "location_id": "l3", "cast_ids": ["c1", "c5"]},
+    {"id": "7",  "slug": "INT. COUNTY MORGUE - DAY",      "int_ext": "INT", "day_night": "DAY",   "pages": 2.0, "est_hours": 3.0, "location_id": "l3", "cast_ids": ["c1", "c5", "c2"]},
+    {"id": "8",  "slug": "INT. REYES APARTMENT - NIGHT",  "int_ext": "INT", "day_night": "NIGHT", "pages": 2.0, "est_hours": 2.5, "location_id": "l4", "cast_ids": ["c1"]},
+    {"id": "9",  "slug": "INT. REYES APARTMENT - DAY",    "int_ext": "INT", "day_night": "DAY",   "pages": 1.0, "est_hours": 1.5, "location_id": "l4", "cast_ids": ["c1", "c4"]},
+    {"id": "10", "slug": "EXT. HARBOR OVERPASS - NIGHT",  "int_ext": "EXT", "day_night": "NIGHT", "pages": 3.5, "est_hours": 5.0, "location_id": "l5", "cast_ids": ["c1", "c4", "c6"]},
+    {"id": "11", "slug": "EXT. HARBOR OVERPASS - NIGHT",  "int_ext": "EXT", "day_night": "NIGHT", "pages": 2.0, "est_hours": 3.5, "location_id": "l5", "cast_ids": ["c1", "c2"]},
+    {"id": "12", "slug": "INT. PRECINCT BULLPEN - DAY",   "int_ext": "INT", "day_night": "DAY",   "pages": 1.5, "est_hours": 2.0, "location_id": "l1", "cast_ids": ["c1", "c3", "c4"]},
+    {"id": "13", "slug": "INT. COUNTY MORGUE - NIGHT",    "int_ext": "INT", "day_night": "NIGHT", "pages": 1.0, "est_hours": 1.5, "location_id": "l3", "cast_ids": ["c5", "c6"]},
+    {"id": "14", "slug": "INT. REYES APARTMENT - NIGHT",  "int_ext": "INT", "day_night": "NIGHT", "pages": 2.5, "est_hours": 3.0, "location_id": "l4", "cast_ids": ["c1", "c2"]}
+  ],
+  "days": [
+    {"day": 1, "date": "2026-03-02", "call_time": "07:00", "scene_ids": ["1", "2", "12"]},
+    {"day": 2, "date": "2026-03-03", "call_time": "07:00", "scene_ids": ["6", "7", "13"]},
+    {"day": 3, "date": "2026-03-04", "call_time": "16:00", "scene_ids": ["3", "4"]},
+    {"day": 4, "date": "2026-03-05", "call_time": "16:00", "scene_ids": ["5", "10"]},
+    {"day": 5, "date": "2026-03-06", "call_time": "12:00", "scene_ids": ["8", "9", "11", "14"]}
+  ]
+}
