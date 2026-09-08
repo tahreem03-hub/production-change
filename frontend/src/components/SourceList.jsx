@@ -1,58 +1,87 @@
+import { useState } from 'react'
+
 /**
- * SourceList – renders parallel_results[] as "Grounded in" sources
+ * SourceList — collapsible parallel search sources.
  *
  * Props:
- *   sources – parallel_results[], each with { title, url, relevance }
+ *   sources – [{ title, url, relevance }]
  */
 export default function SourceList({ sources }) {
+  const [open, setOpen] = useState(false)
   if (!sources?.length) return null
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
-      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
-        Grounded in
-      </p>
-      <ul className="space-y-2">
-        {sources.map((s, i) => (
-          <li key={i} className="flex items-start gap-2 text-sm">
-            {/* External link icon */}
-            <svg
-              className="w-3.5 h-3.5 text-gray-400 mt-0.5 flex-shrink-0"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                fillRule="evenodd"
-                d="M4.25 5.5a.75.75 0 00-.75.75v8.5c0 .414.336.75.75.75h8.5a.75.75 0 00.75-.75v-4a.75.75 0 011.5 0v4A2.25 2.25 0 0112.75 17h-8.5A2.25 2.25 0 012 14.75v-8.5A2.25 2.25 0 014.25 4h5a.75.75 0 010 1.5h-5z"
-                clipRule="evenodd"
-              />
-              <path
-                fillRule="evenodd"
-                d="M6.194 12.753a.75.75 0 001.06.053L16.5 4.44v2.81a.75.75 0 001.5 0v-4.5a.75.75 0 00-.75-.75h-4.5a.75.75 0 000 1.5h2.553l-9.056 8.194a.75.75 0 00-.053 1.06z"
-                clipRule="evenodd"
-              />
-            </svg>
+    <div className="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden">
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="w-full flex items-center justify-between px-5 py-3.5
+                   hover:bg-gray-50 transition-colors"
+        aria-expanded={open}
+      >
+        <div className="flex items-center gap-3">
+          <GlobeIcon />
+          <span className="text-sm font-semibold text-gray-800">Grounded in</span>
+          <span className="text-[11px] font-semibold bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
+            {sources.length} {sources.length === 1 ? 'source' : 'sources'}
+          </span>
+        </div>
+        <ChevronIcon open={open} />
+      </button>
 
-            <div className="flex-1 min-w-0">
-              <a
-                href={s.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-violet-600 hover:text-violet-800 underline-offset-2 hover:underline font-medium truncate block"
-              >
-                {s.title ?? s.url}
-              </a>
-
-              {s.relevance && (
-                <span className="inline-block mt-0.5 text-[11px] bg-violet-100 text-violet-700 px-1.5 py-0.5 rounded-full">
-                  {s.relevance}
+      {open && (
+        <div className="border-t border-gray-100 px-5 pb-5 pt-4">
+          <ul className="space-y-3">
+            {sources.map((s, i) => (
+              <li key={i} className="flex items-start gap-3">
+                <span className="w-6 h-6 rounded-full bg-gray-100 text-gray-500 text-[10px]
+                                  font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
+                  {i + 1}
                 </span>
-              )}
-            </div>
-          </li>
-        ))}
-      </ul>
+                <div className="flex-1 min-w-0">
+                  <a
+                    href={s.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm font-medium text-gray-900 hover:text-gray-600
+                               underline-offset-2 hover:underline block truncate transition-colors"
+                  >
+                    {s.title ?? s.url}
+                  </a>
+                  {s.relevance && (
+                    <p className="text-xs text-gray-400 mt-0.5">{s.relevance}</p>
+                  )}
+                </div>
+                <ExternalLinkIcon />
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
+  )
+}
+
+function GlobeIcon() {
+  return (
+    <svg className="w-4 h-4 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+        d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9" />
+    </svg>
+  )
+}
+function ChevronIcon({ open }) {
+  return (
+    <svg className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+      fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+    </svg>
+  )
+}
+function ExternalLinkIcon() {
+  return (
+    <svg className="w-3.5 h-3.5 text-gray-300 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+    </svg>
   )
 }
