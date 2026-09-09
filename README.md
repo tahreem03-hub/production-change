@@ -1,278 +1,257 @@
-🎬 Production Change Agent
-AI-Powered Film Production Scheduling Assistant
-"Every schedule change has a price. We tell you what it is before you commit."
+<div align="center">
 
-📖 Overview
-Production Change Agent is an AI-powered tool that helps film production managers evaluate the real cost of schedule changes before making them. It combines natural language understanding, Parallel Search, and a deterministic cost model to generate, validate, and rank alternative shooting schedules.
+# 🎬 Production Change Agent
 
-🎯 The Problem
-Film production schedules are complex. A single change - moving a scene, swapping a cast member, or changing a location - can trigger cascading effects:
+### AI-powered film production scheduling assistant
 
-Cost overruns from overtime and hold days
+**_"Every schedule change has a price. We tell you what it is before you commit."_**
 
-Violations of union rules (turnaround time, meal penalties)
+[![Live Demo](https://production-change-oqvj.vercel.app/)
 
-Logistical nightmares with permits and actor availability
+[![License: MIT](http://www.apache.org/licenses/LICENSE-2.0)](LICENSE)
 
-Production managers often make decisions based on intuition, not data.
 
-Our solution: A tool that shows you the cost of every change before you commit.
 
-💡 Key Features
-Feature	Description
-Natural Language Input	Type "move scene 5 to day 3" - no complex UI needed
-AI Agent Trace	Watch the agent's chain of thought in real-time
-3 Ranked Plans	See the best alternatives with cost breakdowns
-Plan Reasoning	Each plan explains WHY it was chosen
-Confidence Scores	See how certain the agent is about each plan
-Stripboard Visualization	Industry-standard schedule view that updates in real-time
-Parallel Search Integration	Grounds decisions in real production data
-Cost Model	Deterministic pricing - same request = same cost
-Violation Detection	Shows union rule violations with pre-existing flag
-Compare View	Side-by-side comparison of all plans
-PDF Export	Export any plan as a professional PDF
-Agent Memory	Remembers user preferences (cost savings vs. fewer violations)
-Multi-Tool Agent	Uses search, validation, cost, and generation tools
-🏗️ Architecture
-text
-┌─────────────────────────────────────────────────────────────┐
-│                     FRONTEND (React + Tailwind)             │
-│  ┌───────────────────────────────────────────────────────┐  │
-│  │  Stripboard  │  Agent Trace  │  Plans  │  Compare   │  │
-│  └───────────────────────────────────────────────────────┘  │
-│                         ▼ HTTP / SSE                        │
-└─────────────────────────────────────────────────────────────┘
-                           │
-                           ▼
-┌─────────────────────────────────────────────────────────────┐
-│                    BACKEND (FastAPI)                        │
-│  ┌───────────────────────────────────────────────────────┐  │
-│  │  /change    │  Agent Trace  │  Parallel Search      │  │
-│  │  /schedule  │  Reasoning    │  Confidence Scoring   │  │
-│  └───────────────────────────────────────────────────────┘  │
-│                         ▼                                   │
-│              ┌──────────────────────┐                       │
-│              │  Parallel Search API │                       │
-│              │  (Real-time data)    │                       │
-│              └──────────────────────┘                       │
-└─────────────────────────────────────────────────────────────┘
-                           │
-                           ▼
-┌─────────────────────────────────────────────────────────────┐
-│                    CORE LOGIC (Python)                      │
-│  ┌───────────────────────────────────────────────────────┐  │
-│  │  Validator  │  Cost Model  │  Generator  │  Parser   │  │
-│  └───────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────┘
-🛠️ Tech Stack
-Layer	Technology	Purpose
-Frontend	React 18 + Vite + Tailwind CSS	UI rendering
-Backend	FastAPI (Python 3.11+)	API server
-AI Agent	Google Gemini (fallback)	Natural language understanding
-Search	Parallel Search API	Production data retrieval
-Deployment	Google Cloud Run	Backend hosting
-Deployment	Netlify	Frontend hosting
-Version Control	Git + GitHub	Code management
-PDF Export	jsPDF	Export plans as PDF
-📁 Project Structure
-text
-production-change-agent/
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── AgentTrace.jsx       # Chain of thought display
-│   │   │   ├── AgentThinking.jsx    # Loading animation with steps
-│   │   │   ├── ChangeInput.jsx      # Natural language input
-│   │   │   ├── PlanCard.jsx         # Individual plan with reasoning
-│   │   │   ├── CompareView.jsx      # Side-by-side comparison
-│   │   │   ├── SourceList.jsx       # Parallel Search citations
-│   │   │   ├── Stripboard.jsx       # Schedule grid
-│   │   │   └── ViolationBadges.jsx  # Rule violation display
-│   │   ├── App.jsx                  # Main application
-│   │   └── api.js                   # API client
-│   ├── package.json
-│   └── .env
-│
-├── backend/
-│   ├── app/
-│   │   ├── main.py                  # FastAPI entry point
-│   │   ├── schemas.py               # Pydantic models
-│   │   ├── tools.py                 # Parallel Search client
-│   │   ├── validator.py             # Rule validation
-│   │   ├── cost_model.py            # Deterministic pricing
-│   │   ├── generate.py              # Plan generation & ranking
-│   │   ├── parser.py                # NL → intent parsing
-│   │   └── config.py                # Environment + data loading
-│   ├── data/
-│   │   └── production.json          # Sample production data
-│   ├── tests/
-│   │   └── test_api.py              # API tests
-│   ├── requirements.txt
-│   └── Dockerfile
-│
-├── demo/
-│   └── demo_script.md               # Video recording script
-│
-├── README.md
-├── LICENSE
-└── .env.example
-🔧 Installation & Setup
-Prerequisites
-Python 3.11+
+<sub>Built for the **Parallel AI Hackathon** · September 2026</sub>
 
-Node.js 18+
+</div>
 
-Git
+---
 
-Parallel API Key (Sign up for free)
 
-1. Clone Repository
-bash
+---
+
+## 📌 Table of Contents
+
+- [The Problem](#-the-problem)
+- [The Solution](#-the-solution)
+- [Features](#-features)
+- [How It Works](#-how-it-works)
+- [Architecture](#️-architecture)
+- [Tech Stack](#️-tech-stack)
+- [Quick Start](#-quick-start)
+- [Environment Variables](#-environment-variables)
+- [API Reference](#-api-reference)
+- [Project Structure](#-project-structure)
+- [Testing](#-testing)
+- [Deployment](#-deployment)
+- [FAQ](#-faq)
+- [License](#-license)
+
+---
+
+## 🎯 The Problem
+
+Film production schedules are brittle. One change — moving a scene, swapping a cast member, shifting a location — cascades through the entire shoot:
+
+| Impact | Example |
+| :-- | :-- |
+| 💸 **Cost overruns** | Overtime, hold days, company moves |
+| ⚖️ **Union violations** | Turnaround time, meal penalties (SAG-AFTRA, IATSE) |
+| 🚧 **Logistics failures** | Permit lead times, location and actor availability |
+
+Production managers make these calls **dozens of times a week**, usually on intuition and a whiteboard. A single bad call can cost six figures.
+
+## 💡 The Solution
+
+Type the change in plain English. The agent generates alternative schedules, validates them against union rules, prices them with a deterministic cost model, and hands you **three ranked plans** with reasoning, confidence scores, and citations.
+
+```
+You:   "move scene 5 to day 3"
+
+Agent: Plan #1 — Move + cascade      $340,000   (−$28,650)   87% confident
+       Plan #2 — Direct move         $352,400   (−$16,250)   74% confident
+       Plan #3 — Swap with scene 9   $361,100   ( −$7,550)   61% confident
+
+       2 plans rejected: Riverside Alley unavailable · Day 5 exceeds 14h cap
+```
+
+---
+
+## ✨ Features
+
+| | Feature | What it does |
+| :-: | :-- | :-- |
+| 💬 | **Natural language input** | `move scene 5 to day 3` — no forms, no dropdowns |
+| 🧠 | **Live agent trace** | Watch the chain of thought stream in over SSE |
+| 📊 | **3 ranked plans** | Full cost breakdown, line by line |
+| ❓ | **Plan reasoning** | Every plan explains *why* it was chosen |
+| 📈 | **Confidence scores** | 0–100% certainty + alternatives considered |
+| 🎞️ | **Stripboard view** | Industry-standard schedule grid, updates in real time |
+| 🔍 | **Parallel Search** | Grounds decisions in real union rules and cost data |
+| 🧮 | **Deterministic cost model** | Same request → same number, every time |
+| ⚠️ | **Violation detection** | Flags hard/soft breaches and marks pre-existing ones |
+| 🔀 | **Compare view** | Side-by-side table of all plans |
+| 📄 | **PDF export** | Ship any plan to the production office |
+| 🗂️ | **Agent memory** | Learns whether you optimise for cost or for compliance |
+
+---
+
+## 🔄 How It Works
+
+```mermaid
+flowchart TD
+    A["1 · User input<br/>'move scene 5 to day 3'"] --> B["2 · Parse intent<br/>action · scene_ids · target_day"]
+    B --> C["3 · Parallel Search (concurrent)<br/>union rules · cost patterns · permit lead times"]
+    B --> D["4 · Generate alternatives<br/>direct move · move+cascade · swap"]
+    C --> E["5 · Validate<br/>hard violations rejected · soft violations priced"]
+    D --> E
+    E --> F["6 · Cost model<br/>crew · locations · moves · OT · penalties · holds"]
+    F --> G["7 · Rank<br/>delta + risk_delta x $450<br/>+$5,000 nudge for the literal request"]
+    G --> H["8 · Explain<br/>reasoning · confidence · alternatives considered"]
+    H --> I["9 · Return<br/>3 ranked plans · rejects · trace · citations"]
+```
+
+**The ranking formula**
+
+```python
+risk_adjusted_cost = cost_delta + (risk_delta * 450) - literal_request_nudge
+# risk_delta   : change in weighted violation score
+# $450         : internal price of one risk point
+# nudge ($5k)  : tie-breaker favouring the change the user actually asked for
+```
+
+---
+
+## 🏗️ Architecture
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│  FRONTEND — React 18 + Vite + Tailwind        (Vercel)       │
+│  Stripboard  │  Agent Trace  │  Plan Cards  │  Compare View  │
+└──────────────────────────────────────────────────────────────┘
+                        │  HTTP / SSE
+                        ▼
+┌──────────────────────────────────────────────────────────────┐
+│  BACKEND — FastAPI (Python 3.11)              (Vercel)       │
+│  /change  ·  /change/stream  ·  /schedule  ·  /health        │
+└──────────────────────────────────────────────────────────────┘
+            │                                  │
+            ▼                                  ▼
+┌───────────────────────────┐    ┌─────────────────────────────┐
+│  CORE LOGIC               │    │  EXTERNAL                   │
+│  parser · validator       │    │  Parallel Search API        │
+│  cost_model · generate    │    │  Google Gemini (fallback)   │
+└───────────────────────────┘    └─────────────────────────────┘
+```
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+| :-- | :-- |
+| **Frontend** | React 18 · Vite · Tailwind CSS |
+| **Backend** | FastAPI · Python 3.11+ · Pydantic |
+| **Search** | Parallel Search API |
+| **LLM** | Google Gemini *(fallback intent parser)* |
+| **Hosting** | Vercel (frontend **and** backend) |
+| **Export** | jsPDF |
+| **Tests** | pytest · Vitest |
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Python **3.11+**
+- Node.js **18+**
+- A [Parallel API key](https://platform.parallel.ai) *(free credits available)*
+
+### 1. Clone
+
+```bash
 git clone https://github.com/yourusername/production-change-agent.git
 cd production-change-agent
-2. Backend Setup
-bash
+```
+
+### 2. Backend
+
+```bash
 cd backend
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate          # Windows: venv\Scripts\activate
 pip install -r requirements.txt
-cp .env.example .env
-Add your API keys to .env:
+cp .env.example .env              # then add your keys
+uvicorn app.main:app --reload --port 8000
+```
 
-env
-PARALLEL_API_KEY=your_api_key_here
-GEMINI_API_KEY=your_gemini_key_here  # Optional
-ALLOWED_ORIGINS=http://localhost:5173
-3. Frontend Setup
-bash
+### 3. Frontend
+
+```bash
 cd frontend
 npm install
-Create .env:
-
-env
-VITE_API_URL=http://localhost:8000
-4. Run Locally
-bash
-# Terminal 1: Backend
-cd backend
-uvicorn app.main:app --reload --port 8000
-
-# Terminal 2: Frontend
-cd frontend
+echo "VITE_API_URL=http://localhost:8000" > .env
 npm run dev
-Visit http://localhost:5173
+```
 
-🚀 How It Works
-The Agent Pipeline
-text
-┌─────────────────────────────────────────────────────────────────┐
-│ 1. User Input                                                 │
-│    "move scene 5 to day 3"                                    │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│ 2. Agent Parses Intent                                        │
-│    → Action: "move"                                           │
-│    → Scene ID: "5"                                            │
-│    → Target Day: 3                                            │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│ 3. Parallel Search (Concurrent)                               │
-│    → Union rules (SAG-AFTRA, IATSE)                          │
-│    → Rescheduling cost patterns                               │
-│    → Permit lead times                                        │
-│    → Night work premiums                                      │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│ 4. Generate Alternative Schedules                             │
-│    → Strategy: Direct Move                                    │
-│    → Strategy: Move + Cascade                                 │
-│    → Strategy: Swap                                           │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│ 5. Validate Each Plan                                         │
-│    → Hard violations → Reject                                 │
-│    → Soft violations → Price into risk score                  │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│ 6. Calculate Costs                                            │
-│    → Crew base days                                           │
-│    → Location fees                                            │
-│    → Company moves                                            │
-│    → Overtime, meal penalties, night premiums                 │
-│    → Cast work days, hold days                                │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│ 7. Rank Plans                                                 │
-│    → Risk-adjusted cost: delta + risk_delta × $450           │
-│    → $5,000 nudge for honoring the literal request            │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│ 8. Add Reasoning + Confidence                                 │
-│    → "Why this plan?" explanation                             │
-│    → Confidence score (0-100%)                                │
-│    → Alternatives considered count                            │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│ 9. Return to Frontend                                         │
-│    → 3 ranked plans with full details                         │
-│    → Rejected plans with reasons                              │
-│    → Agent trace (chain of thought)                           │
-│    → Parallel Search citations                                │
-└─────────────────────────────────────────────────────────────────┘
-📊 API Endpoints
-Endpoint	Method	Description
-/change	POST	Submit change request → ranked plans
-/change/stream	POST	SSE stream for live agent trace
-/schedule	GET	Current stripboard data
-/health	GET	Liveness + Parallel status
-Example: POST /change
-Request:
+Open **http://localhost:5173** and try `move scene 5 to day 3`.
 
-json
+> 💡 **No API key?** Set `DEMO=1` in `backend/.env` to run fully offline on fixtures.
+
+---
+
+## 🔐 Environment Variables
+
+### Backend
+
+| Variable | Required | Default | Purpose |
+| :-- | :-: | :-- | :-- |
+| `PARALLEL_API_KEY` | ✅ | — | Parallel Search API key |
+| `GEMINI_API_KEY` | ⬜ | — | Gemini fallback parser |
+| `ALLOWED_ORIGINS` | ⬜ | `*` | CORS origins (comma-separated) |
+| `DEMO` | ⬜ | `0` | `1` = offline mode, no API calls |
+
+### Frontend
+
+| Variable | Required | Purpose |
+| :-- | :-: | :-- |
+| `VITE_API_URL` | ✅ | Base URL of the backend |
+
+---
+
+## 📡 API Reference
+
+| Endpoint | Method | Description |
+| :-- | :-: | :-- |
+| `/change` | `POST` | Submit a change request → ranked plans |
+| `/change/stream` | `POST` | SSE stream of the live agent trace |
+| `/schedule` | `GET` | Current stripboard data |
+| `/health` | `GET` | Liveness + Parallel Search status |
+
+<details>
+<summary><b>Example — POST /change</b></summary>
+
+**Request**
+
+```json
 {
   "request": "move scene 5 to day 3",
   "max_plans": 3,
   "use_search": true
 }
-Response:
+```
 
-json
+**Response** *(truncated)*
+
+```json
 {
   "status": "ok",
+  "baseline_cost": 368650,
+  "intent": { "action": "move", "scene_ids": ["5"], "target_day": 3 },
   "plans": [
     {
       "rank": 1,
+      "strategy": "move_and_cascade",
       "summary": "Move scene 5 to Day 3 and push the lightest work off that day",
-      "reasoning": "Moved scene 5 from Day 4 to Day 3. This saves $28,650 by reducing overtime and hold costs. Reduces violations from 8 to 5.",
+      "reasoning": "Saves $28,650 by reducing overtime and hold costs. Violations drop from 8 to 5.",
       "confidence": 0.87,
       "alternatives_considered": 12,
-      "strategy": "move_and_cascade",
       "cost": 340000,
       "risk_delta": -49,
       "changes": [
-        {
-          "scene_id": "5",
-          "action": "move",
-          "from_day": 4,
-          "to_day": 3,
-          "reason": "Scene 5 moved from Day 4 to Day 3."
-        }
+        { "scene_id": "5", "action": "move", "from_day": 4, "to_day": 3 }
       ],
       "violations": [
         {
@@ -288,8 +267,8 @@ json
         "plan_total": 340000,
         "delta": -28650,
         "lines": [
-          {"label": "Company moves", "amount": -6500},
-          {"label": "Crew overtime", "amount": -8400}
+          { "label": "Company moves", "amount": -6500 },
+          { "label": "Crew overtime", "amount": -8400 }
         ]
       },
       "parallel_results": [
@@ -308,126 +287,201 @@ json
       "reasons": ["Riverside Alley is unavailable", "Day 5 exceeds 14h hard cap"]
     }
   ],
-  "baseline_cost": 368650,
-  "intent": {"action": "move", "scene_ids": ["5"], "target_day": 3},
   "trace": [
     "Parsed intent: move ['5'] -> day 3",
     "Searching production precedent with Parallel AI...",
     "Generating alternative schedules...",
     "Generated 3 viable plans, 2 rejected",
-    "Plan #1 recommended as optimal",
-    "Agent confidence in recommended plan: 87%"
+    "Plan #1 recommended as optimal (confidence 87%)"
   ],
   "search_used": true,
   "elapsed_ms": 812
 }
-🎬 Demo Script (3 Minutes)
-Time	Scene	Action
-0:00	Title	Show logo + tagline
-0:15	Problem	Show complex schedule + explain challenge
-0:30	Solution	Input "move scene 5 to day 3"
-0:45	Agent Trace	Show chain of thought appearing
-1:15	Results	Show 3 ranked plans with costs
-1:45	Reasoning	Expand a plan to show "Why this plan?"
-2:00	Comparison	Show Compare View table
-2:15	Select	Click a plan → stripboard updates
-2:30	Value	"This saves $28,650. What would you decide?"
-2:45	Close	Tagline + CTA
-🧪 Testing
-Backend Tests
-bash
+```
+
+</details>
+
+---
+
+## 📁 Project Structure
+
+<details>
+<summary><b>Expand tree</b></summary>
+
+```
+production-change-agent/
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── AgentTrace.jsx        # Chain-of-thought terminal
+│   │   │   ├── AgentThinking.jsx     # Streaming loading states
+│   │   │   ├── ChangeInput.jsx       # Natural language input
+│   │   │   ├── PlanCard.jsx          # Plan + reasoning + confidence
+│   │   │   ├── CompareView.jsx       # Side-by-side comparison
+│   │   │   ├── SourceList.jsx        # Parallel Search citations
+│   │   │   ├── Stripboard.jsx        # Schedule grid
+│   │   │   └── ViolationBadges.jsx   # Rule violation display
+│   │   ├── App.jsx
+│   │   └── api.js
+│   ├── package.json
+│   └── vercel.json
+│
+├── backend/
+│   ├── app/
+│   │   ├── main.py                   # FastAPI entry point
+│   │   ├── schemas.py                # Pydantic models
+│   │   ├── tools.py                  # Parallel Search client
+│   │   ├── parser.py                 # NL → intent
+│   │   ├── generate.py               # Plan generation & ranking
+│   │   ├── validator.py              # Union rule validation
+│   │   ├── cost_model.py             # Deterministic pricing
+│   │   └── config.py                 # Env + data loading
+│   ├── data/production.json          # Sample production
+│   ├── tests/test_api.py
+│   ├── requirements.txt
+│   └── vercel.json
+│
+├── demo/demo_script.md
+├── LICENSE
+└── README.md
+```
+
+</details>
+
+---
+
+## 🧪 Testing
+
+```bash
+# Backend
+cd backend && pytest tests/ -v
+
+# Frontend
+cd frontend && npm test
+```
+
+| Input | Expected |
+| :-- | :-- |
+| `move scene 5 to day 3` | `200` — 3 plans with trace, reasoning, confidence |
+| `delete scene 999` | `404` — *Unknown scene* |
+| `fix the schedule` | `422` — unparseable, returns example phrasing |
+| `DEMO=1` | Runs on fixtures, zero external calls |
+
+---
+
+## 🚢 Deployment
+
+Both apps ship to **Vercel** from the same repo as two separate projects.
+
+### Backend (FastAPI on Vercel)
+
+`backend/vercel.json`:
+
+```json
+{
+  "builds": [{ "src": "app/main.py", "use": "@vercel/python" }],
+  "routes": [{ "src": "/(.*)", "dest": "app/main.py" }]
+}
+```
+
+```bash
 cd backend
-pytest tests/ -v
-Frontend Tests
-bash
+vercel --prod
+```
+
+Then set the env vars in **Project → Settings → Environment Variables**:
+
+```
+PARALLEL_API_KEY = your_key
+ALLOWED_ORIGINS  = https://your-frontend.vercel.app
+```
+
+> ⚠️ Vercel's Python runtime is serverless. Keep `/change` under the function timeout (10s on Hobby, 60s on Pro) — the agent runs search and generation concurrently to stay well inside it.
+
+### Frontend (Vite on Vercel)
+
+```bash
 cd frontend
-npm test
-Manual Test Cases
-Test	Expected Result
-"move scene 5 to day 3"	3 plans with trace, reasoning, confidence
-"delete scene 999"	404 error with "Unknown scene"
-"fix the schedule"	422 error with example phrasing
-Offline mode (DEMO=1)	Uses fixtures, no API calls
-🔒 Environment Variables
-Variable	Required	Purpose
-PARALLEL_API_KEY	✅ Yes	Parallel Search API key
-GEMINI_API_KEY	❌ No	Google Gemini (fallback parser)
-ALLOWED_ORIGINS	❌ No	CORS origins (default: *)
-DEMO	❌ No	Set to 1 for offline mode
-PORT	❌ No	Server port (default: 8000)
-🚀 Deployment
-Backend: Google Cloud Run
-bash
-cd backend
-gcloud builds submit --tag gcr.io/your-project/production-agent
-gcloud run deploy production-agent \
-  --image gcr.io/your-project/production-agent \
-  --platform managed \
-  --region us-central1 \
-  --allow-unauthenticated \
-  --set-env-vars PARALLEL_API_KEY=your_key_here,ALLOWED_ORIGINS=https://your-site.netlify.app
-Frontend: Netlify
-bash
-cd frontend
-npm run build
-# Drag-and-drop `dist` folder to Netlify
-Or connect GitHub repo to Netlify for automatic deploys.
+vercel --prod
+```
 
-Set environment variable in Netlify:
+| Setting | Value |
+| :-- | :-- |
+| Framework preset | Vite |
+| Build command | `npm run build` |
+| Output directory | `dist` |
+| Env var | `VITE_API_URL = https://your-backend.vercel.app` |
 
-text
-VITE_API_URL = https://your-cloud-run-url
-🧠 Agentic Features
-Feature	Description	Where It Shows
-Chain of Thought	Step-by-step reasoning	AgentTrace component (green terminal)
-Plan Reasoning	Why each plan was chosen	Inside expanded plan card
-Confidence Score	0-100% certainty	Bar on every plan card
-Alternatives Count	How many considered	Shown next to confidence
-Strategy Tag	Approach used	Badge on plan
-User Preferences	Adapts to user goals	Backend memory (cost savings vs. violations)
-Multi-Tool Agent	Search + Validate + Cost + Generate	Backend agent loop
-Parallel Citations	Grounding sources	SourceList component
-❓ FAQ
-Q: Do I need a Parallel API key?
-A: Yes, sign up at platform.parallel.ai for free credits.
+Connect the GitHub repo for automatic preview deploys on every push.
 
-Q: Can I run this offline?
-A: Yes, set DEMO=1 to use mock data.
+---
 
-Q: What if I don't have GCP credits?
-A: Cloud Run has an always-free tier. No credits required.
+## 🎥 Demo Script (3 min)
 
-Q: How does Parallel Search work?
-A: It runs concurrently with schedule generation, searching for union rules, cost patterns, and permit data. Results are attached to plans as citations.
+| Time | Beat |
+| :-- | :-- |
+| 0:00 | Title + tagline |
+| 0:15 | The problem — show the tangled schedule |
+| 0:30 | Type `move scene 5 to day 3` |
+| 0:45 | Agent trace streams in |
+| 1:15 | Three ranked plans with costs |
+| 1:45 | Expand a plan → *"Why this plan?"* |
+| 2:00 | Compare view |
+| 2:15 | Select a plan → stripboard updates live |
+| 2:30 | **"This saves $28,650. What would you have decided?"** |
+| 2:45 | Tagline + CTA |
 
-Q: Are costs realistic?
-A: Yes - costs come from a deterministic model with industry-standard rates for crew, locations, and union rules.
+---
 
-Q: What's the agent trace?
-A: A step-by-step log showing the agent's reasoning process, from parsing input to recommending a plan.
+## ❓ FAQ
 
-📝 License
-MIT License - See LICENSE for details.
+<details>
+<summary><b>Do I need a Parallel API key?</b></summary>
+For live search, yes — free credits at <a href="https://platform.parallel.ai">platform.parallel.ai</a>. To just try the app, set <code>DEMO=1</code>.
+</details>
 
-🤝 Credits
-Parallel AI - Free search credits for hackathon participants
+<details>
+<summary><b>How does Parallel Search fit in?</b></summary>
+It runs <em>concurrently</em> with schedule generation, retrieving union rules, rescheduling cost patterns and permit lead times. Results are attached to each plan as citations, so every recommendation is traceable to a source.
+</details>
 
-Google Cloud - Free tier hosting
+<details>
+<summary><b>Are the costs realistic?</b></summary>
+They come from a deterministic model using industry-standard rates for crew, locations, company moves and union penalties. Same request → same number, always. It's a decision-support tool, not a replacement for your line producer.
+</details>
 
-FastAPI - High-performance backend framework
+<details>
+<summary><b>Why serverless instead of a long-running container?</b></summary>
+The agent loop is bounded — parse, search, generate, validate, cost, rank. It finishes in under a second on the sample production, which fits Vercel's function model cleanly and keeps hosting free.
+</details>
 
-React + Vite - Modern frontend stack
+<details>
+<summary><b>What's the agent trace?</b></summary>
+A step-by-step log of the agent's reasoning, streamed over SSE from parse to final recommendation. It's there so you can audit the decision, not just accept it.
+</details>
 
-Tailwind CSS - Utility-first styling
+---
 
-📞 Support
-For hackathon participants:
+## 🗺️ Roadmap
 
-GitHub Issues: Report bugs here
+- [ ] Import real stripboards from Movie Magic / Scenechronize
+- [ ] Weather and daylight constraints for exterior scenes
+- [ ] Multi-change requests (`"move 5 to day 3 and drop scene 12"`)
+- [ ] Team mode — shared plans with comments and approvals
+- [ ] Fine-grained union rulesets per region
 
-Devpost: Check project page for updates
+---
 
-Parallel Discord: Quick support from the Parallel team
+## 🤝 Credits
 
-Built for the Parallel AI Hackathon
-September 2026
+**Parallel AI** — search credits · **FastAPI** · **React + Vite** · **Tailwind CSS** · **Vercel**
+
+## 📝 License
+
+MIT — see [LICENSE](LICENSE).
+
+---
+
+<div align="center">
+<sub>Built for the Parallel AI Hackathon · September 2026</sub>
+</div>
