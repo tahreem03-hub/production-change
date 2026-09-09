@@ -6,18 +6,25 @@
 
 **_"Every schedule change has a price. We tell you what it is before you commit."_**
 
-[![Live Demo](https://production-change-oqvj.vercel.app/)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://production-change-oqvj.vercel.app/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
 
-[![License: MIT](http://www.apache.org/licenses/LICENSE-2.0)](LICENSE)
+![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=flat-square&logo=python&logoColor=white)
+![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=black)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white)
+![Tailwind](https://img.shields.io/badge/Tailwind-3-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
+![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-000000?style=flat-square&logo=vercel)
 
-
-
-<sub>Built for the **Parallel AI Hackathon** · September 2026</sub>
+<sub>Built for **Agentic Cinema: The Blockbuster Hackathon** · September 2026</sub>
 
 </div>
 
 ---
 
+<!-- Add a screen recording here: drop demo.gif in a docs/ folder and update this path -->
+<div align="center">
+  <img src="docs/demo.gif" alt="Production Change Agent demo" width="850">
+</div>
 
 ---
 
@@ -36,6 +43,7 @@
 - [Testing](#-testing)
 - [Deployment](#-deployment)
 - [FAQ](#-faq)
+- [Team](#-team)
 - [License](#-license)
 
 ---
@@ -162,7 +170,7 @@ risk_adjusted_cost = cost_delta + (risk_delta * 450) - literal_request_nudge
 ### 1. Clone
 
 ```bash
-git clone https://github.com/yourusername/production-change-agent.git
+git clone https://github.com/tahreem03-hub/production-change-agent.git
 cd production-change-agent
 ```
 
@@ -393,7 +401,7 @@ Then set the env vars in **Project → Settings → Environment Variables**:
 
 ```
 PARALLEL_API_KEY = your_key
-ALLOWED_ORIGINS  = https://your-frontend.vercel.app
+ALLOWED_ORIGINS  = https://production-change-oqvj.vercel.app
 ```
 
 > ⚠️ Vercel's Python runtime is serverless. Keep `/change` under the function timeout (10s on Hobby, 60s on Pro) — the agent runs search and generation concurrently to stay well inside it.
@@ -410,7 +418,7 @@ vercel --prod
 | Framework preset | Vite |
 | Build command | `npm run build` |
 | Output directory | `dist` |
-| Env var | `VITE_API_URL = https://your-backend.vercel.app` |
+| Env var | `VITE_API_URL = <your backend Vercel URL>` |
 
 Connect the GitHub repo for automatic preview deploys on every push.
 
@@ -472,6 +480,17 @@ A step-by-step log of the agent's reasoning, streamed over SSE from parse to fin
 
 ---
 
+## 👥 Team
+
+Built together, end to end — agent loop, cost model, validation, and UI.
+
+| | Links |
+| :-- | :-- |
+| **Tahreem Noor** | [LinkedIn](https://www.linkedin.com/in/tahreem-noor-86320736a) · [GitHub](https://github.com/tahreem03-hub) |
+| **Khadijah Naveed** | [LinkedIn](https://www.linkedin.com/in/khadijah-naveed-695976344/) · [GitHub](https://github.com/KhadijahNaveed) |
+
+---
+
 ## 🤝 Credits
 
 **Parallel AI** — search credits · **FastAPI** · **React + Vite** · **Tailwind CSS** · **Vercel**
@@ -483,5 +502,10 @@ MIT — see [LICENSE](LICENSE).
 ---
 
 <div align="center">
-<sub>Built for the Parallel AI Hackathon · September 2026</sub>
+
+[![Live Demo](https://img.shields.io/badge/Try_it_live-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://production-change-oqvj.vercel.app/)
+[![Devpost](https://img.shields.io/badge/Devpost-003E54?style=for-the-badge&logo=devpost&logoColor=white)](https://devpost.com/software/YOUR-PUBLIC-PROJECT-SLUG)
+
+<sub>Built for Agentic Cinema: The Blockbuster Hackathon · September 2026</sub>
+
 </div>
