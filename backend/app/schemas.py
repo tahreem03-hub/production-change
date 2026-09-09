@@ -97,49 +97,54 @@ class Violation(BaseModel):
 class Plan(BaseModel):
     rank: int
     changes: list[SceneChange]
-    cost: float = Field(..., description="Incremental cost vs. the current schedule, in whole currency units.")
+    cost: float = Field(
+        ...,
+        description="Incremental cost vs. the current schedule, in whole currency units.",
+    )
     strategy: str = ""
     summary: str = ""
     risk_score: float = 0.0
     feasible: bool = True
-
-        # NEW FIELDS:
     reasoning: Optional[str] = None
     confidence: Optional[float] = None
     alternatives_considered: Optional[int] = None
-    strategy: Optional[str] = None
-    parallel_results: Optional[List[Source]] = None
-
-    
     risk_delta: float = Field(
         default=0.0,
         description="Risk this plan adds (positive) or removes (negative) versus the current schedule.",
     )
     honors_request: bool = Field(
-        default=True, description="False when the plan deviates from the literal request."
+        default=True,
+        description="False when the plan deviates from the literal request.",
     )
     cost_breakdown: Optional[CostBreakdown] = None
     violations: list[Violation] = Field(default_factory=list)
     schedule: list[dict[str, Any]] = Field(
-        default_factory=list, description="Resulting stripboard: one entry per shoot day."
+        default_factory=list,
+        description="Resulting stripboard: one entry per shoot day.",
     )
     parallel_results: list[ParallelResult] = Field(default_factory=list)
 
 
 class RejectedPlan(BaseModel):
     strategy: str
-    changes: list[SceneChange]
+    changes: list[SceneChange] = Field(default_factory=list)
     cost: Optional[float] = None
     reasons: list[str]
 
 
 class ParsedIntent(BaseModel):
-    action: Literal["move", "swap", "cut", "unknown"]
+    # Extended action set — move_day and swap_days are resolved in generate.py
+    # before they reach the response contract.
+    action: Literal["move", "swap", "cut", "hold", "move_day", "swap_days", "unknown"]
     scene_ids: list[str] = Field(default_factory=list)
     target_day: Optional[int] = None
     raw: str = ""
     parser: str = "rules"
     confidence: float = 1.0
+    # Carry-along for compound intents (move_day / swap_days)
+    extra: dict[str, Any] = Field(default_factory=dict)
+
+    model_config = {"populate_by_name": True}
 
 
 class ChangeResponse(BaseModel):

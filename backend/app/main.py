@@ -50,7 +50,24 @@ app.add_middleware(
 # ──────────────────────────────────────────────────────────────────────────
 def _context_for_search(intent: ParsedIntent, prod: dict[str, Any]):
     scenes = [prod["_scenes_by_id"][sid] for sid in intent.scene_ids if sid in prod["_scenes_by_id"]]
-    locations = [prod["_locations_by_id"][s["location_id"]] for s in scenes]
+    # For day-level intents (move_day / swap_days) pull scenes from the referenced days
+    if not scenes:
+        extra = getattr(intent, "extra", {}) or {}
+        day_nums = [v for v in extra.values() if isinstance(v, int)]
+        if intent.target_day:
+            day_nums.append(intent.target_day)
+        for dn in day_nums:
+            day_obj = next((d for d in prod["days"] if d["day"] == dn), None)
+            if day_obj:
+                for sid in day_obj.get("scene_ids", []):
+                    s = prod["_scenes_by_id"].get(sid)
+                    if s:
+                        scenes.append(s)
+    locations = [
+        prod["_locations_by_id"][s["location_id"]]
+        for s in scenes
+        if s.get("location_id") in prod["_locations_by_id"]
+    ]
     return scenes, locations
 
 
@@ -60,14 +77,42 @@ def _validate_intent(intent: ParsedIntent, prod: dict[str, Any]) -> None:
             status_code=422,
             detail=(
                 "Could not read that change request. Try phrasing like "
-                "'move scene 5 to day 3', 'swap scene 4 and scene 9', or 'cut scene 7'."
+                "'move scene 5 to day 3', 'swap scenes 4 and 9', 'cut scene 7', "
+                "'push day 4 to day 6', or 'swap day 2 and day 5'."
             ),
         )
-    unknown = [sid for sid in intent.scene_ids if sid not in prod["_scenes_by_id"]]
-    if unknown:
-        raise HTTPException(status_code=404, detail=f"Unknown scene(s): {', '.join(unknown)}")
+
+    # For scene-level actions, validate referenced scene IDs exist
+    if intent.action in ("move", "swap", "cut", "hold") and intent.scene_ids:
+        unknown = [sid for sid in intent.scene_ids if sid not in prod["_scenes_by_id"]]
+        if unknown:
+            raise HTTPException(status_code=404, detail=f"Unknown scene(s): {', '.join(unknown)}")
+
+    # For day-level actions, validate both days exist
     valid_days = {d["day"] for d in prod["days"]}
-    if intent.target_day is not None and intent.target_day not in valid_days:
+    extra = getattr(intent, "extra", {}) or {}
+
+    if intent.action == "move_day":
+        from_day = extra.get("from_day")
+        to_day   = extra.get("to_day") or intent.target_day
+        for label, val in [("from_day", from_day), ("to_day", to_day)]:
+            if val is not None and val not in valid_days:
+                raise HTTPException(
+                    status_code=404,
+                    detail=f"Day {val} ({label}) is not in this schedule (days 1–{max(valid_days)}).",
+                )
+
+    elif intent.action == "swap_days":
+        day_a = extra.get("day_a") or intent.target_day
+        day_b = extra.get("day_b")
+        for val in (day_a, day_b):
+            if val is not None and val not in valid_days:
+                raise HTTPException(
+                    status_code=404,
+                    detail=f"Day {val} is not in this schedule (days 1–{max(valid_days)}).",
+                )
+
+    elif intent.target_day is not None and intent.target_day not in valid_days:
         raise HTTPException(
             status_code=404,
             detail=f"Day {intent.target_day} is not in this schedule (days 1–{max(valid_days)}).",

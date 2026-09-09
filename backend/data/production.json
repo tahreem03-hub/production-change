@@ -78,6 +78,24 @@
       "day_rate": 1100,
       "hold_rate": 550,
       "unavailable": []
+    },
+    {
+      "id": "c7",
+      "name": "Dana Voss",
+      "role": "FORENSIC LEAD",
+      "deal": "daily",
+      "day_rate": 1800,
+      "hold_rate": 900,
+      "unavailable": ["2026-03-07", "2026-03-08"]
+    },
+    {
+      "id": "c8",
+      "name": "Leon Park",
+      "role": "INFORMANT",
+      "deal": "daily",
+      "day_rate": 1200,
+      "hold_rate": 600,
+      "unavailable": ["2026-03-05"]
     }
   ],
   "locations": [
@@ -95,7 +113,7 @@
       "type": "practical",
       "day_rate": 9800,
       "permit_lead_days": 5,
-      "blackout_dates": ["2026-03-06"]
+      "blackout_dates": []
     },
     {
       "id": "l3",
@@ -120,29 +138,89 @@
       "day_rate": 11200,
       "permit_lead_days": 7,
       "blackout_dates": []
+    },
+    {
+      "id": "l6",
+      "name": "Police Evidence Room",
+      "type": "stage",
+      "day_rate": 3800,
+      "permit_lead_days": 0,
+      "blackout_dates": []
     }
   ],
   "scenes": [
-    {"id": "1",  "slug": "INT. PRECINCT BULLPEN - DAY",   "int_ext": "INT", "day_night": "DAY",   "pages": 1.5, "est_hours": 2.0, "location_id": "l1", "cast_ids": ["c1", "c3"]},
-    {"id": "2",  "slug": "INT. PRECINCT BULLPEN - DAY",   "int_ext": "INT", "day_night": "DAY",   "pages": 2.0, "est_hours": 2.5, "location_id": "l1", "cast_ids": ["c1", "c4"]},
-    {"id": "3",  "slug": "INT. PRECINCT BULLPEN - NIGHT", "int_ext": "INT", "day_night": "NIGHT", "pages": 1.0, "est_hours": 1.5, "location_id": "l1", "cast_ids": ["c1", "c6"]},
-    {"id": "4",  "slug": "EXT. RIVERSIDE ALLEY - NIGHT",  "int_ext": "EXT", "day_night": "NIGHT", "pages": 2.5, "est_hours": 4.0, "location_id": "l2", "cast_ids": ["c1", "c2", "c6"]},
-    {"id": "5",  "slug": "EXT. RIVERSIDE ALLEY - NIGHT",  "int_ext": "EXT", "day_night": "NIGHT", "pages": 3.0, "est_hours": 4.5, "location_id": "l2", "cast_ids": ["c1", "c2"]},
-    {"id": "6",  "slug": "INT. COUNTY MORGUE - DAY",      "int_ext": "INT", "day_night": "DAY",   "pages": 1.5, "est_hours": 2.0, "location_id": "l3", "cast_ids": ["c1", "c5"]},
-    {"id": "7",  "slug": "INT. COUNTY MORGUE - DAY",      "int_ext": "INT", "day_night": "DAY",   "pages": 2.0, "est_hours": 3.0, "location_id": "l3", "cast_ids": ["c1", "c5", "c2"]},
-    {"id": "8",  "slug": "INT. REYES APARTMENT - NIGHT",  "int_ext": "INT", "day_night": "NIGHT", "pages": 2.0, "est_hours": 2.5, "location_id": "l4", "cast_ids": ["c1"]},
-    {"id": "9",  "slug": "INT. REYES APARTMENT - DAY",    "int_ext": "INT", "day_night": "DAY",   "pages": 1.0, "est_hours": 1.5, "location_id": "l4", "cast_ids": ["c1", "c4"]},
-    {"id": "10", "slug": "EXT. HARBOR OVERPASS - NIGHT",  "int_ext": "EXT", "day_night": "NIGHT", "pages": 3.5, "est_hours": 5.0, "location_id": "l5", "cast_ids": ["c1", "c4", "c6"]},
-    {"id": "11", "slug": "EXT. HARBOR OVERPASS - NIGHT",  "int_ext": "EXT", "day_night": "NIGHT", "pages": 2.0, "est_hours": 3.5, "location_id": "l5", "cast_ids": ["c1", "c2"]},
-    {"id": "12", "slug": "INT. PRECINCT BULLPEN - DAY",   "int_ext": "INT", "day_night": "DAY",   "pages": 1.5, "est_hours": 2.0, "location_id": "l1", "cast_ids": ["c1", "c3", "c4"]},
-    {"id": "13", "slug": "INT. COUNTY MORGUE - NIGHT",    "int_ext": "INT", "day_night": "NIGHT", "pages": 1.0, "est_hours": 1.5, "location_id": "l3", "cast_ids": ["c5", "c6"]},
-    {"id": "14", "slug": "INT. REYES APARTMENT - NIGHT",  "int_ext": "INT", "day_night": "NIGHT", "pages": 2.5, "est_hours": 3.0, "location_id": "l4", "cast_ids": ["c1", "c2"]}
+    {"id": "1",  "slug": "INT. PRECINCT BULLPEN - DAY",        "int_ext": "INT", "day_night": "DAY",   "pages": 1.5, "est_hours": 2.0, "location_id": "l1", "cast_ids": ["c1", "c3"],       "description": "Reyes briefs Dispatcher on the vic's last known location. Tensions run high as the clock ticks."},
+    {"id": "2",  "slug": "INT. PRECINCT BULLPEN - DAY",        "int_ext": "INT", "day_night": "DAY",   "pages": 2.0, "est_hours": 2.5, "location_id": "l1", "cast_ids": ["c1", "c4"],       "description": "Captain Hall pulls Reyes aside and orders her to back off the case. She refuses."},
+    {"id": "3",  "slug": "INT. PRECINCT BULLPEN - NIGHT",      "int_ext": "INT", "day_night": "NIGHT", "pages": 1.0, "est_hours": 1.5, "location_id": "l1", "cast_ids": ["c1", "c6"],       "description": "Reyes and Uniform review security footage alone in the empty bullpen."},
+    {"id": "4",  "slug": "EXT. RIVERSIDE ALLEY - NIGHT",       "int_ext": "EXT", "day_night": "NIGHT", "pages": 2.5, "est_hours": 4.0, "location_id": "l2", "cast_ids": ["c1", "c2", "c6"], "description": "Discovery of the body. Reyes and Uniform secure the scene while Vic is identified."},
+    {"id": "5",  "slug": "EXT. RIVERSIDE ALLEY - NIGHT",       "int_ext": "EXT", "day_night": "NIGHT", "pages": 3.0, "est_hours": 4.5, "location_id": "l2", "cast_ids": ["c1", "c2"],       "description": "Reyes interrogates a witness in the alley. High tension, possible pursuit sequence."},
+    {"id": "6",  "slug": "INT. COUNTY MORGUE - DAY",           "int_ext": "INT", "day_night": "DAY",   "pages": 1.5, "est_hours": 2.0, "location_id": "l3", "cast_ids": ["c1", "c5"],       "description": "ME Tech walks Reyes through preliminary autopsy findings."},
+    {"id": "7",  "slug": "INT. COUNTY MORGUE - DAY",           "int_ext": "INT", "day_night": "DAY",   "pages": 2.0, "est_hours": 3.0, "location_id": "l3", "cast_ids": ["c1", "c5", "c2"], "description": "Vic's identity is confirmed. Reyes and ME Tech discover a key piece of forensic evidence."},
+    {"id": "8",  "slug": "INT. REYES APARTMENT - NIGHT",       "int_ext": "INT", "day_night": "NIGHT", "pages": 2.0, "est_hours": 2.5, "location_id": "l4", "cast_ids": ["c1"],             "description": "Reyes alone at home, reviewing case files. She notices a pattern others missed."},
+    {"id": "9",  "slug": "INT. REYES APARTMENT - DAY",         "int_ext": "INT", "day_night": "DAY",   "pages": 1.0, "est_hours": 1.5, "location_id": "l4", "cast_ids": ["c1", "c4"],       "description": "Captain Hall arrives unannounced. He warns Reyes her investigation puts her in danger."},
+    {"id": "10", "slug": "EXT. HARBOR OVERPASS - NIGHT",       "int_ext": "EXT", "day_night": "NIGHT", "pages": 3.5, "est_hours": 5.0, "location_id": "l5", "cast_ids": ["c1", "c4", "c6"], "description": "Climactic confrontation under the overpass. Stunt work required. Rain effect."},
+    {"id": "11", "slug": "EXT. HARBOR OVERPASS - NIGHT",       "int_ext": "EXT", "day_night": "NIGHT", "pages": 2.0, "est_hours": 3.5, "location_id": "l5", "cast_ids": ["c1", "c2"],       "description": "Reyes chases a suspect across the overpass. Foot chase, dialogue-free."},
+    {"id": "12", "slug": "INT. PRECINCT BULLPEN - DAY",        "int_ext": "INT", "day_night": "DAY",   "pages": 1.5, "est_hours": 2.0, "location_id": "l1", "cast_ids": ["c1", "c3", "c4"], "description": "Team debrief after the alley scene. Reyes pushes back on Hall's timeline."},
+    {"id": "13", "slug": "INT. COUNTY MORGUE - NIGHT",         "int_ext": "INT", "day_night": "NIGHT", "pages": 1.0, "est_hours": 1.5, "location_id": "l3", "cast_ids": ["c5", "c6"],       "description": "ME Tech and Uniform process additional evidence without Reyes."},
+    {"id": "14", "slug": "INT. REYES APARTMENT - NIGHT",       "int_ext": "INT", "day_night": "NIGHT", "pages": 2.5, "est_hours": 3.0, "location_id": "l4", "cast_ids": ["c1", "c2"],       "description": "Reyes and Vic meet covertly. He reveals he knows who the killer is."},
+    {"id": "15", "slug": "INT. POLICE EVIDENCE ROOM - DAY",    "int_ext": "INT", "day_night": "DAY",   "pages": 1.5, "est_hours": 2.0, "location_id": "l6", "cast_ids": ["c1", "c7"],       "description": "Forensic Lead shows Reyes tampered evidence. Someone inside the precinct is dirty."},
+    {"id": "16", "slug": "INT. POLICE EVIDENCE ROOM - DAY",    "int_ext": "INT", "day_night": "DAY",   "pages": 1.0, "est_hours": 1.5, "location_id": "l6", "cast_ids": ["c7", "c5"],       "description": "Forensic Lead and ME Tech quietly catalogue what's missing without alerting anyone."},
+    {"id": "17", "slug": "EXT. RIVERSIDE ALLEY - DAY",         "int_ext": "EXT", "day_night": "DAY",   "pages": 2.0, "est_hours": 3.0, "location_id": "l2", "cast_ids": ["c1", "c8"],       "description": "Reyes meets her Informant near the original crime scene. New lead points upward."},
+    {"id": "18", "slug": "INT. PRECINCT BULLPEN - NIGHT",      "int_ext": "INT", "day_night": "NIGHT", "pages": 1.5, "est_hours": 2.0, "location_id": "l1", "cast_ids": ["c1", "c4", "c3"], "description": "Hall confronts Reyes with incriminating evidence. She realizes she's been set up."},
+    {"id": "19", "slug": "INT. COUNTY MORGUE - DAY",           "int_ext": "INT", "day_night": "DAY",   "pages": 1.0, "est_hours": 1.5, "location_id": "l3", "cast_ids": ["c5", "c7"],       "description": "ME Tech and Forensic Lead finalize autopsy. Cause of death is not what it seemed."},
+    {"id": "20", "slug": "EXT. HARBOR OVERPASS - DAY",         "int_ext": "EXT", "day_night": "DAY",   "pages": 2.5, "est_hours": 3.5, "location_id": "l5", "cast_ids": ["c1", "c8"],       "description": "Reyes and Informant scope the overpass in daylight ahead of the night confrontation."},
+    {"id": "21", "slug": "INT. REYES APARTMENT - DAY",         "int_ext": "INT", "day_night": "DAY",   "pages": 1.5, "est_hours": 2.0, "location_id": "l4", "cast_ids": ["c1", "c3"],       "description": "Dispatcher visits Reyes at home with an off-the-books tip that breaks the case open."},
+    {"id": "22", "slug": "INT. POLICE EVIDENCE ROOM - NIGHT",  "int_ext": "INT", "day_night": "NIGHT", "pages": 2.0, "est_hours": 2.5, "location_id": "l6", "cast_ids": ["c1", "c7", "c6"], "description": "Reyes, Forensic Lead and Uniform set a trap in the evidence room for the dirty cop."}
   ],
   "days": [
-    {"day": 1, "date": "2026-03-02", "call_time": "07:00", "scene_ids": ["1", "2", "12"]},
-    {"day": 2, "date": "2026-03-03", "call_time": "07:00", "scene_ids": ["6", "7", "13"]},
-    {"day": 3, "date": "2026-03-04", "call_time": "16:00", "scene_ids": ["3", "4"]},
-    {"day": 4, "date": "2026-03-05", "call_time": "16:00", "scene_ids": ["5", "10"]},
-    {"day": 5, "date": "2026-03-06", "call_time": "12:00", "scene_ids": ["8", "9", "11", "14"]}
+    {
+      "day": 1,
+      "date": "2026-03-02",
+      "call_time": "07:00",
+      "scene_ids": ["1", "2", "12"],
+      "notes": "Stage day — all scenes at Precinct Bullpen. Owen Brady unavailable on Day 2 & 3."
+    },
+    {
+      "day": 2,
+      "date": "2026-03-03",
+      "call_time": "07:00",
+      "scene_ids": ["6", "7", "19"],
+      "notes": "Morgue block. Group all County Morgue scenes to share location fee."
+    },
+    {
+      "day": 3,
+      "date": "2026-03-04",
+      "call_time": "07:00",
+      "scene_ids": ["15", "16", "21", "22"],
+      "notes": "Evidence Room block + apartment pickups. Scene 22 moved here (night Evidence Room scene with c1+c7+c6)."
+    },
+    {
+      "day": 4,
+      "date": "2026-03-05",
+      "call_time": "16:00",
+      "scene_ids": ["3", "4", "13"],
+      "notes": "Night block starts. Leon Park unavailable this day."
+    },
+    {
+      "day": 5,
+      "date": "2026-03-06",
+      "call_time": "16:00",
+      "scene_ids": ["5", "17", "18"],
+      "notes": "Night block. Riverside Alley scenes + Precinct night."
+    },
+    {
+      "day": 6,
+      "date": "2026-03-07",
+      "call_time": "07:00",
+      "scene_ids": ["8", "9", "14"],
+      "notes": "Dana Voss unavailable Day 6-7. Moved scene 22 off this day."
+    },
+    {
+      "day": 7,
+      "date": "2026-03-08",
+      "call_time": "16:00",
+      "scene_ids": ["10", "11", "20"],
+      "notes": "Exterior night shoot at Harbor Overpass. Dana Voss unavailable."
+    }
   ]
 }

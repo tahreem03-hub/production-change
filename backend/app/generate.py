@@ -142,10 +142,107 @@ def _relieve_overflow(
     return changes
 
 
-def build_candidates(intent: ParsedIntent, prod: dict[str, Any]) -> list[Candidate]:
+def build_candidates(intent: ParsedIntent, prod: dict[str, Any]) -> list[Candidate]:  # noqa: PLR0912
     cands: list[Candidate] = []
 
-    if intent.action == "move" and intent.target_day is not None:
+    # ── move_day: "push day 4 to day 6" — move every scene on day X to day Y ──
+    if intent.action == "move_day":
+        extra = getattr(intent, "extra", {}) or {}
+        from_day = extra.get("from_day")
+        to_day   = extra.get("to_day") or intent.target_day
+        if from_day and to_day:
+            src_day_obj = get_day(prod["days"], from_day)
+            if src_day_obj:
+                scene_ids = list(src_day_obj["scene_ids"])
+
+                # 1. move all scenes from source day to target day
+                sched = clone_schedule(prod)
+                changes = [c for sid in scene_ids if (c := move_scene(sched, prod, sid, to_day))]
+                if changes:
+                    cands.append(Candidate(
+                        "move_day_direct",
+                        f"Move all {len(changes)} scene(s) from Day {from_day} to Day {to_day}.",
+                        changes, sched,
+                    ))
+
+                # 2. move + cascade overflow off target day
+                sched = clone_schedule(prod)
+                changes = [c for sid in scene_ids if (c := move_scene(sched, prod, sid, to_day))]
+                if changes:
+                    cascade = _relieve_overflow(sched, prod, to_day)
+                    if cascade:
+                        cands.append(Candidate(
+                            "move_day_cascade",
+                            f"Move Day {from_day} scenes to Day {to_day} and cascade overflow off Day {to_day}.",
+                            changes + cascade, sched,
+                        ))
+
+                # 3. distribute scenes across neighbouring days instead
+                neighbours = [d["day"] for d in prod["days"] if d["day"] != from_day]
+                if len(neighbours) >= 2:
+                    sched = clone_schedule(prod)
+                    changes_all: list[SceneChange] = []
+                    for i, sid in enumerate(scene_ids):
+                        dest = neighbours[i % len(neighbours)]
+                        ch = move_scene(sched, prod, sid, dest)
+                        if ch:
+                            changes_all.append(ch)
+                    if changes_all:
+                        cands.append(Candidate(
+                            "move_day_distribute",
+                            f"Distribute Day {from_day} scenes across neighbouring days to keep each day light.",
+                            changes_all, sched,
+                        ))
+
+    # ── swap_days: "swap day 2 and day 5" — swap ALL scenes between two days ──
+    elif intent.action == "swap_days":
+        extra = getattr(intent, "extra", {}) or {}
+        day_a = extra.get("day_a") or intent.target_day
+        day_b = extra.get("day_b")
+        if day_a and day_b:
+            obj_a = get_day(prod["days"], day_a)
+            obj_b = get_day(prod["days"], day_b)
+            if obj_a and obj_b:
+                sched = clone_schedule(prod)
+                da = get_day(sched, day_a)
+                db = get_day(sched, day_b)
+                da["scene_ids"], db["scene_ids"] = (
+                    list(db["scene_ids"]),
+                    list(da["scene_ids"]),
+                )
+                changes = (
+                    [SceneChange(scene_id=sid, action="swap", from_day=day_a, to_day=day_b,
+                                 reason=f"Scene {sid} moved from Day {day_a} to Day {day_b}.")
+                     for sid in obj_a["scene_ids"]]
+                    + [SceneChange(scene_id=sid, action="swap", from_day=day_b, to_day=day_a,
+                                   reason=f"Scene {sid} moved from Day {day_b} to Day {day_a}.")
+                       for sid in obj_b["scene_ids"]]
+                )
+                cands.append(Candidate(
+                    "swap_days_direct",
+                    f"Swap all scenes between Day {day_a} and Day {day_b}.",
+                    changes, sched,
+                ))
+
+    # ── hold: mark scene as not shooting (treated as cut for cost purposes) ──
+    elif intent.action == "hold" and intent.scene_ids:
+        for sid in intent.scene_ids:
+            sched = clone_schedule(prod)
+            src = find_scene_day(sched, sid)
+            if src is None:
+                continue
+            get_day(sched, src)["scene_ids"].remove(sid)
+            changes = [SceneChange(
+                scene_id=sid, action="hold", from_day=src,
+                reason=f"Scene {sid} held (removed from Day {src}, not cut permanently).",
+            )]
+            cands.append(Candidate(
+                f"hold_{sid}",
+                f"Hold scene {sid} — pull it from Day {src} without cutting it from the script.",
+                changes, sched,
+            ))
+
+    elif intent.action == "move" and intent.target_day is not None:
         scene_ids = intent.scene_ids
         target = intent.target_day
 
