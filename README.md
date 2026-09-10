@@ -497,7 +497,7 @@ Built together, end to end — agent loop, cost model, validation, and UI.
 
 ## 📝 License
 
-MIT — see [LICENSE](LICENSE).
+Apache — see [LICENSE](LICENSE).
 
 ---
 
